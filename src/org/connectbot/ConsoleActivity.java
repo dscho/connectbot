@@ -20,6 +20,7 @@ package org.connectbot;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import org.connectbot.ViewFlipper;
 import org.connectbot.bean.SelectionArea;
 import org.connectbot.service.PromptHelper;
 import org.connectbot.service.TerminalBridge;
@@ -72,7 +73,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 import android.widget.AdapterView.OnItemClickListener;
 
 import de.mud.terminal.vt320;
