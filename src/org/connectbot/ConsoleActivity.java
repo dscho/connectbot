@@ -399,10 +399,20 @@ public class ConsoleActivity extends Activity {
 
 		// detect fling gestures to switch between terminals
 		final GestureDetector detect = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+			// Scroll stuff
 			private float totalY = 0;
+
+			// Cursor stuff
+			private float startX = -1, startY = -1;
+			private float currentX = -1, currentY = -1;
 
 			@Override
 			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+				if (startX >= 0) {
+					startX = startY = -1;
+					return false;
+				}
 
 				final float distx = e2.getRawX() - e1.getRawX();
 				final float disty = e2.getRawY() - e1.getRawY();
@@ -442,19 +452,64 @@ public class ConsoleActivity extends Activity {
 					totalY = 0;
 				}
 
-				// activate consider if within x tolerance
-				if (Math.abs(e1.getX() - e2.getX()) < ViewConfiguration.getTouchSlop() * 4) {
+				// cursor motion stuff (we consider anything in the center cross to be cursor motion stuff)
 
-					View flip = findCurrentView(R.id.console_flip);
-					if(flip == null) return false;
-					TerminalView terminal = (TerminalView)flip;
+				View flip = findCurrentView(R.id.console_flip);
+				if(flip == null) return false;
+				TerminalView terminal = (TerminalView)flip;
+				int slop = ViewConfiguration.getTouchSlop();
+				float x = e1.getX();
+				float y = e1.getY();
+				int w = flip.getWidth();
+				int h = flip.getHeight();
+
+				if ((x >= w / 4 && x <= w * 3 / 4) || (y >= h / 4 && y <= h * 3 /4)) {
+					int slop4 = slop * 4;
+					if (startX != x || startY != y) {
+						startX = currentX = x;
+						startY = currentY = y;
+					}
+					int steps = (int)((e2.getX() - currentX) / slop4);
+					if (steps != 0) {
+						currentX += steps * slop4;
+						final int keyCode;
+						if (steps > 0)
+							keyCode = vt320.KEY_RIGHT;
+						else {
+							keyCode = vt320.KEY_LEFT;
+							steps = -steps;
+						}
+						Log.i("ConnectBot.horizontal", "" + steps + " x " + keyCode);
+						while (steps-- > 0)
+							((vt320)terminal.bridge.buffer).keyPressed(keyCode, ' ', 0);
+					}
+					steps = (int)((e2.getY() - currentY) / slop4);
+					if (steps != 0) {
+						currentY += steps * slop4;
+						final int keyCode;
+						if (steps > 0)
+							keyCode = vt320.KEY_DOWN;
+						else {
+							keyCode = vt320.KEY_UP;
+							steps = -steps;
+						}
+						Log.i("ConnectBot.vertical", "" + steps + " x " + keyCode);
+						while (steps-- > 0)
+							((vt320)terminal.bridge.buffer).keyPressed(keyCode, ' ', 0);
+					}
+					return true;
+				}
+
+				// activate consider if within x tolerance
+				if (Math.abs(e1.getX() - e2.getX()) < slop * 4) {
+
 
 					// estimate how many rows we have scrolled through
 					// accumulate distance that doesn't trigger immediate scroll
 					totalY += distanceY;
 					final int moved = (int)(totalY / terminal.bridge.charHeight);
 
-					// consume as scrollback only if towards right half of screen
+					// consume as scrollback only if towards right-most quarter of screen
 					if (e2.getX() > flip.getWidth() / 2) {
 						if (moved != 0) {
 							int base = terminal.bridge.buffer.getWindowBase();
