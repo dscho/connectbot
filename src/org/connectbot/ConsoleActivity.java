@@ -422,12 +422,12 @@ public class ConsoleActivity extends Activity {
 				// make sure user kept a steady hand horizontally
 				if (Math.abs(disty) < (flip.getHeight() / 4)) {
 					if (distx > goalwidth) {
-						shiftCurrentTerminal(SHIFT_RIGHT);
+						switchGNUScreens/*shiftCurrentTerminal*/(SHIFT_RIGHT);
 						return true;
 					}
 
 					if (distx < -goalwidth) {
-						shiftCurrentTerminal(SHIFT_LEFT);
+						switchGNUScreens/*shiftCurrentTerminal*/(SHIFT_LEFT);
 						return true;
 					}
 
@@ -963,7 +963,16 @@ public class ConsoleActivity extends Activity {
 		unbindService(connection);
 	}
 
-	protected void shiftCurrentTerminal(final int direction) {
+	protected void switchGNUScreens(final int direction) {
+		View flip = findCurrentView(R.id.console_flip);
+		if(flip == null) return;
+		TerminalView terminal = (TerminalView)flip;
+		((vt320)terminal.bridge.buffer).write(0x01); // Ctrl+A
+		((vt320)terminal.bridge.buffer).write(direction == SHIFT_LEFT ? 'p' : 'n');
+		return;
+	}
+
+		protected void shiftCurrentTerminal(final int direction) {
 		View overlay;
 		synchronized (flip) {
 			boolean shouldAnimate = flip.getChildCount() > 1;
