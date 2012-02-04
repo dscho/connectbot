@@ -164,6 +164,7 @@ public class HostListActivity extends ListActivity {
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 		boolean agreed = prefs.getBoolean(PreferenceConstants.EULA, false);
+agreed = true;
 		if(!agreed) {
 			this.startActivityForResult(new Intent(this, WizardActivity.class), REQUEST_EULA);
 		}
