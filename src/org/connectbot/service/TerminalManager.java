@@ -604,7 +604,7 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 			String key) {
 		if (PreferenceConstants.BELL.equals(key)) {
 			boolean wantAudible = sharedPreferences.getBoolean(
-					PreferenceConstants.BELL, true);
+					PreferenceConstants.BELL, false);
 			if (wantAudible && mediaPlayer == null)
 				enableMediaPlayer();
 			else if (!wantAudible && mediaPlayer != null)
@@ -621,7 +621,7 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 					PreferenceConstants.BELL_VIBRATE, true);
 		} else if (PreferenceConstants.BUMPY_ARROWS.equals(key)) {
 			wantKeyVibration = sharedPreferences.getBoolean(
-					PreferenceConstants.BUMPY_ARROWS, true);
+					PreferenceConstants.BUMPY_ARROWS, false);
 		} else if (PreferenceConstants.WIFI_LOCK.equals(key)) {
 			final boolean lockingWifi = prefs.getBoolean(PreferenceConstants.WIFI_LOCK, true);
 			connectivityManager.setWantWifiLock(lockingWifi);
