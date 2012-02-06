@@ -479,6 +479,14 @@
 	     accessibility purposes. -->
 	<string name="image_description_send_escape_character">Send escape character.</string>
 
+	<!-- Describes the icon of the "send control+a character" button in the terminal view for
+	     accessibility purposes. -->
+	<string name="image_description_toggle_control_a_character">Toggle control+a character.</string>
+
+	<!-- Describes the icon of the "send tab character" button in the terminal view for
+	     accessibility purposes. -->
+	<string name="image_description_toggle_tab_character">Toggle tab character.</string>
+
 	<!-- Describes the icon of the "show keyboard" button in the terminal view for accessibility
 	     purposes. -->
 	<string name="image_description_show_keyboard">Show keyboard.</string>

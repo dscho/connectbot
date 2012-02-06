@@ -397,6 +397,32 @@ public class ConsoleActivity extends Activity {
 			}
 		});
 
+		final ImageView ctrlAButton = (ImageView) findViewById(R.id.button_ctrl_a);
+		ctrlAButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View view) {
+				View flip = findCurrentView(R.id.console_flip);
+				if (flip == null) return;
+				TerminalView terminal = (TerminalView)flip;
+
+				((vt320)terminal.bridge.buffer).write(0x01); // Ctrl+A
+
+				keyboardGroup.setVisibility(View.GONE);
+			}
+		});
+
+		final ImageView tabButton = (ImageView) findViewById(R.id.button_tab);
+		tabButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View view) {
+				View flip = findCurrentView(R.id.console_flip);
+				if (flip == null) return;
+				TerminalView terminal = (TerminalView)flip;
+
+				((vt320)terminal.bridge.buffer).write(0x09); // Tab
+
+				keyboardGroup.setVisibility(View.GONE);
+			}
+		});
+
 		// detect fling gestures to switch between terminals
 		final GestureDetector detect = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
 			// Scroll stuff
